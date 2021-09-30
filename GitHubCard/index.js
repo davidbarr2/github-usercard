@@ -1,8 +1,19 @@
+import axios from 'axios'
+
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
     https://api.github.com/users/<your name>
 */
+
+function fetchCardData(username){
+  axios.get(`https://api.github.com/users/${username}`)
+  .then(res => {
+    const cards = document.querySelector('div .cards')
+    cards.appendChild(githubCard(res))
+  })
+  .catch(err => console.log(err))
+}
 
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
@@ -29,6 +40,10 @@
 */
 
 const followersArray = [];
+followersArray.push('tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell')
+followersArray.forEach( username => {
+  fetchCardData(username)
+})
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
@@ -49,6 +64,51 @@ const followersArray = [];
       </div>
     </div>
 */
+
+function githubCard(user){
+  //create and classes
+  const cardDiv = document.createElement('div')
+  cardDiv.classList.add('card')
+  const userImg = document.createElement('img')
+  const cardInfoDiv = document.createElement('div')
+  cardInfoDiv.classList.add('card-info')
+  const nameHeader = document.createElement('h3')
+  nameHeader.classList.add('name')
+  const usernameP = document.createElement('p')
+  usernameP.classList.add('username')
+  const locationP = document.createElement('p')
+  const linkP = document.createElement('p')
+  const linkAnchor = document.createElement('a')
+  const followersP = document.createElement('p')
+  const followingP = document.createElement('p')
+  const bioP = document.createElement('p')
+
+  //hierarchy
+  cardDiv.appendChild(userImg)
+  cardDiv.appendChild(cardInfoDiv)
+    cardInfoDiv.appendChild(nameHeader)
+    cardInfoDiv.appendChild(usernameP)
+    cardInfoDiv.appendChild(locationP)
+    cardInfoDiv.appendChild(linkP)
+      linkP.appendChild(linkAnchor)
+    cardInfoDiv.appendChild(followersP)
+    cardInfoDiv.appendChild(followingP)
+    cardInfoDiv.appendChild(bioP)
+
+
+  //add in user data
+  userImg.setAttribute('src', user.data.avatar_url)
+  nameHeader.textContent = user.data.nameHeader
+  usernameP.textContent = user.data.login
+  locationP.textContent = user.data.location
+  linkAnchor.setAttribute('href', user.data.html_url)
+  linkAnchor.textContent = user.data.html_url
+  followersP.textContent = `Followers: ${user.data.followers}`
+  followingP.textContent = `Following: ${user.data.following}`
+  bioP.textContent = `Bio: ${user.data.bio}`
+
+  return cardDiv
+}
 
 /*
   List of LS Instructors Github username's:
